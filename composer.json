@@ -1,0 +1,16 @@
+{
+    "name": "monit",
+    "type": "drupal-module",
+    "description": "Monit Integration",
+    "keywords": [
+    ],
+    "homepage": "https://www.drupal.org/project/monit",
+    "minimum-stability": "dev",
+    "support": {
+        "issues": "https://www.drupal.org/project/issues/monit",
+        "source": "http://cgit.drupalcode.org/monit",
+    },
+    "require": {
+        "drupal/security_review": "^1.0@alpha"
+    }
+}

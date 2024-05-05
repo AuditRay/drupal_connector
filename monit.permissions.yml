@@ -1,0 +1,3 @@
+access monit configurations:
+  title: 'Access Monit configurations'
+  description: 'Allow access to Monit configurations.'

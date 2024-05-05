@@ -1,0 +1,17 @@
+monit.monit_config_form:
+  path: '/admin/config/system/monit_config'
+  defaults:
+    _form: '\Drupal\monit\Form\MonitConfigForm'
+    _title: 'MonitConfigForm'
+  requirements:
+    _permission: 'access monit configurations'
+  options:
+    _admin_route: TRUE
+
+monit.health:
+  path: '/monit/health'
+  defaults:
+    _title: "Subscribe device to topic"
+    _controller: '\Drupal\monit\Controller\HealthController::health'
+  requirements:
+    _custom_access: '\Drupal\monit\Controller\HealthController::access'
