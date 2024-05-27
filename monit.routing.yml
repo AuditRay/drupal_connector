@@ -15,3 +15,5 @@ monit.health:
     _controller: '\Drupal\monit\Controller\HealthController::health'
   requirements:
     _custom_access: '\Drupal\monit\Controller\HealthController::access'
+  options:
+    _format: 'json'

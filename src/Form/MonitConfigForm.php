@@ -37,15 +37,6 @@ class MonitConfigForm extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('monit.adminsettings');
 
-    $form['api_base_url'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('API Base URL'),
-      '#description' => $this->t('Monit base URL.'),
-      '#default_value' => $config->get('api_base_url'),
-      '#maxlength' => 64,
-      '#size' => 64,
-      '#weight' => '0',
-    ];
     $form['token'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Token'),
@@ -78,7 +69,6 @@ class MonitConfigForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
 
     $config = $this->configFactory()->getEditable('monit.adminsettings');
-    $config->set('api_base_url', $form_state->getValue('api_base_url'))->save();
     $config->set('token', $form_state->getValue('token'))->save();
 
     \Drupal::messenger()->addMessage('Monit configurations saved.');

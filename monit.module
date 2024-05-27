@@ -8,102 +8,6 @@
 use Drupal\Core\Routing\RouteMatchInterface;
 
 /**
- * Project is missing security update(s).
- *
- * @deprecated in drupal:8.3.0 and is removed from drupal:9.0.0.
- *   Use \Drupal\update\UpdateManagerInterface::NOT_SECURE instead.
- *
- * @see https://www.drupal.org/node/2831620
- */
-const UPDATE_NOT_SECURE = 1;
-
-/**
- * Current release has been unpublished and is no longer available.
- *
- * @deprecated in drupal:8.3.0 and is removed from drupal:9.0.0.
- *   Use \Drupal\update\UpdateManagerInterface::REVOKED instead.
- *
- * @see https://www.drupal.org/node/2831620
- */
-const UPDATE_REVOKED = 2;
-
-/**
- * Current release is no longer supported by the project maintainer.
- *
- * @deprecated in drupal:8.3.0 and is removed from drupal:9.0.0.
- *   Use \Drupal\update\UpdateManagerInterface::NOT_SUPPORTED instead.
- *
- * @see https://www.drupal.org/node/2831620
- */
-const UPDATE_NOT_SUPPORTED = 3;
-
-/**
- * Project has a new release available, but it is not a security release.
- *
- * @deprecated in drupal:8.3.0 and is removed from drupal:9.0.0.
- *   Use \Drupal\update\UpdateManagerInterface::NOT_CURRENT instead.
- *
- * @see https://www.drupal.org/node/2831620
- */
-const UPDATE_NOT_CURRENT = 4;
-
-/**
- * Project is up to date.
- *
- * @deprecated in drupal:8.3.0 and is removed from drupal:9.0.0.
- *   Use \Drupal\update\UpdateManagerInterface::CURRENT instead.
- *
- * @see https://www.drupal.org/node/2831620
- */
-const UPDATE_CURRENT = 5;
-
-/**
- * Project's status cannot be checked.
- *
- * @deprecated in drupal:8.3.0 and is removed from drupal:9.0.0.
- *   Use \Drupal\update\UpdateFetcherInterface::NOT_CHECKED instead.
- *
- * @see https://www.drupal.org/node/2831620
- */
-const UPDATE_NOT_CHECKED = -1;
-
-/**
- * No available update data was found for project.
- *
- * @deprecated in drupal:8.3.0 and is removed from drupal:9.0.0.
- *   Use \Drupal\update\UpdateFetcherInterface::UNKNOWN instead.
- *
- * @see https://www.drupal.org/node/2831620
- */
-const UPDATE_UNKNOWN = -2;
-
-/**
- * There was a failure fetching available update data for this project.
- *
- * @deprecated in drupal:8.3.0 and is removed from drupal:9.0.0.
- *   Use \Drupal\update\UpdateFetcherInterface::NOT_FETCHED instead.
- *
- * @see https://www.drupal.org/node/2831620
- */
-const UPDATE_NOT_FETCHED = -3;
-
-/**
- * We need to (re)fetch available update data for this project.
- *
- * @deprecated in drupal:8.3.0 and is removed from drupal:9.0.0.
- *   Use \Drupal\update\UpdateFetcherInterface::FETCH_PENDING instead.
- *
- * @see https://www.drupal.org/node/2831620
- */
-const UPDATE_FETCH_PENDING = -4;
-
-/**
- * Define the API base URL and the token from the admin settings.
- */
-define('TOKEN', \Drupal::config('monit.adminsettings')->get('token'));
-define('BASE_URL', \Drupal::config('monit.adminsettings')->get('api_base_url'));
-
-/**
  * Implements hook_help().s
  */
 function monit_help($route_name, RouteMatchInterface $route_match) {
@@ -119,97 +23,39 @@ function monit_help($route_name, RouteMatchInterface $route_match) {
   }
 }
 
-
 /**
- * Push the modules data to Monit server.
+ * This functiion will return Drupal's core and installed contributed
+ * modules available updates data, based on core Update module.
  *
- * @throws \GuzzleHttp\Exception\GuzzleException
+ * @return array $updateData
  */
-function monit_push_modules_updates($pushData = TRUE) {
-  if (TOKEN && BASE_URL) {
-    // Send modules updates data
-    \Drupal::moduleHandler()->loadInclude('update', 'compare.inc');
-    $updates = update_get_available(TRUE);
-    $projects = update_calculate_project_data($updates);
+function monit_get_available_updates() {
+  // Send modules updates data
+  \Drupal::moduleHandler()->loadInclude('update', 'compare.inc');
+  $updates = update_get_available(TRUE);
+  $projects = update_calculate_project_data($updates);
 
-    $updateData = [];
-    $updateData["framework_info"] = get_update_object("drupal", $projects, $updates);
-    $updateData["website_components"] = [];
-    unset($projects["drupal"]);
-    foreach ($projects as $key => $value) {
-      $componentUpdateData = get_update_object($key, $projects, $updates);
-      $updateData["website_components"][] = $componentUpdateData;
-    }
-
-    if($pushData) {
-      $webData = json_encode($updateData);
-      \Drupal::httpClient()->request('POST', BASE_URL . '/api/v1/update-info', [
-        'body' => $webData,
-        'headers' => [
-          'Authorization' => "Bearer " . TOKEN,
-          'Content-Type' => 'application/json'
-        ],
-      ]);
-    }
-
-    return $updateData;
+  $updateData = [];
+  $updateData["framework_info"] = get_update_object("drupal", $projects, $updates);
+  $updateData["website_components"] = [];
+  unset($projects["drupal"]);
+  foreach ($projects as $key => $value) {
+    $componentUpdateData = get_update_object($key, $projects, $updates);
+    $updateData["website_components"][] = $componentUpdateData;
   }
+
+  return $updateData;
 }
 
 /**
- * Implements hook_cron().
+ * This helper function will return the available updates/releases data
+ * of a specific project.
+ *
+ * @param string $project_name
+ * @param array $projects
+ * @param array $updates
+ * @return array $updateData
  */
-function monit_cron() {
-  if (TOKEN && BASE_URL) {
-//    $results = [];
-//    $checklist = \Drupal::service('security_review.checklist');
-//    $checks = $checklist->getEnabledChecks();
-//    foreach ($checks as $check) {
-//      // Run the check.
-//      $results = array_merge($results, $checklist->runChecks([$check]));
-//    }
-//
-//    if (!empty($results)) {
-//      $security_review = Drupal::service('security_review');
-//      $security_review->setLastRun(time());
-//      $checklist->storeResults($results);
-//
-//      $payload = [];
-//      foreach ($results as $result) {
-//        $help = $result->check()->help();
-//        $help_text = '';
-//        foreach ($help['#paragraphs'] as $paragraph) {
-//          if ($paragraph instanceof Drupal\Core\Link) {
-//            $help_text .= $paragraph->toString();
-//          }
-//          else {
-//            $help_text .= $paragraph->render();
-//          }
-//        }
-//        $payload[] = [
-//          'title' => $result->check()->getTitle(),
-//          'help_text' => $help_text,
-//          'result' => $result->result(),
-//          'findings' => $result->findings(),
-//          'message' => $result->resultMessage()->render(),
-//          'time' => $result->time(),
-//        ];
-//
-//      }
-//    }
-//
-//    $request = \Drupal::httpClient()->request('POST', BASE_URL . '/api/v1/update-info', [
-//      'body' => json_encode($payload),
-//      'headers' => [
-//        'Authorization' => "Bearer " . TOKEN,
-//        'Content-Type' => 'application/json'
-//      ],
-//    ]);
-
-    monit_push_modules_updates();
-  }
-}
-
 function get_update_object($project_name, $projects, $updates) {
   if(!$projects[$project_name]) return false;
   $updateTypes = [
@@ -245,15 +91,17 @@ function get_update_object($project_name, $projects, $updates) {
     ];
   }
 
-  foreach ($projects[$project_name]["security updates"] as $key => $value) {
-    $updateData["security_updates"][] = [
-      "name" => $value["name"],
-      "version" => $value["version"],
-      "attributes" => [
-        "terms" => $value["terms"],
-        "security" => $value["security"],
-      ]
-    ];
+  if(isset($projects[$project_name]["security_updates"])) {
+    foreach ($projects[$project_name]["security_updates"] as $key => $value) {
+      $updateData["security_updates"][] = [
+        "name" => $value["name"],
+        "version" => $value["version"],
+        "attributes" => [
+          "terms" => $value["terms"],
+          "security" => $value["security"],
+        ]
+      ];
+    }
   }
 
   return $updateData;
