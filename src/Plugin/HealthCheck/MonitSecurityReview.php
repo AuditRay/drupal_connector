@@ -3,8 +3,8 @@
 namespace Drupal\monit\Plugin\HealthCheck;
 
 use Drupal\monit\Plugin\HealthCheckPluginBase;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-Use Drupal\Core\Link;
+use Drupal\Core\Link;
+use Drupal\security_review\CheckResult;
 
 /**
  * @HealthCheck(
@@ -15,6 +15,12 @@ Use Drupal\Core\Link;
  */
 class MonitSecurityReview extends HealthCheckPluginBase {
 
+  /**
+   * The current plugin ID.
+   *
+   * @var string $pluginId
+   */
+  protected $pluginId;
   /**
    * The Security Review manager service.
    *
@@ -35,18 +41,10 @@ class MonitSecurityReview extends HealthCheckPluginBase {
    * @param \Drupal\security_review\SecurityReview $security_review_manager
    *   The Security Review manager service.
    */
-  public function __construct() {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition) {
     $this->securityReview = \Drupal::service('security_review');
     $this->securityReviewPluginManager = \Drupal::service('plugin.manager.security_review.security_check');
-  }
-
-   /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('security_review')
-    );
+    $this->pluginId = $plugin_id;
   }
 
   /**
@@ -84,6 +82,25 @@ class MonitSecurityReview extends HealthCheckPluginBase {
     foreach ($definitions as $id => $definition) {
       $plugin = $this->securityReviewPluginManager->createInstance($id);
       $lastResult = $plugin->lastResult();
+      $result_number = $lastResult['result'];
+      switch ($result_number) {
+        case CheckResult::SUCCESS:
+          $resultStatus = 'success';
+          break;
+
+        case CheckResult::FAIL:
+          $resultStatus = 'fail';
+          break;
+
+        case CheckResult::WARN:
+          $resultStatus = 'warning';
+          break;
+
+        case CheckResult::INFO:
+          $resultStatus = 'info';
+          break;
+      }
+      $resultMessage = $plugin->getStatusMessage($result_number);
       $resultDetails = $plugin->getDetails($lastResult['findings'], $lastResult['hushed']);
       foreach ($resultDetails as $resultDetail) {
         foreach ($resultDetail['#paragraphs'] as $paragraph) {
@@ -106,12 +123,14 @@ class MonitSecurityReview extends HealthCheckPluginBase {
         'decription' => $helpDetails,
       ];
       $payload[] = [
+        'id' => $this->pluginId . '_' . $id,
         'title' => $plugin->getTitle(),
+        'resultStatus' => $resultStatus,
+        'resultStatusMessage' => $resultMessage,
         'help_text' => $help,
         'description' => $plugin->getDescription(),
         'namespace' => $plugin->getNamespace(),
-        'status' => $plugin->getStatusMessage(),
-        'result' => $results,
+        'details' => $results,
         'time' => $this->securityReview->getLastRun(),
       ];
     }
