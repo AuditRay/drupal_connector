@@ -8,9 +8,10 @@
     "minimum-stability": "dev",
     "support": {
         "issues": "https://www.drupal.org/project/issues/monit",
-        "source": "http://cgit.drupalcode.org/monit",
+        "source": "http://cgit.drupalcode.org/monit"
     },
     "require": {
-        "drupal/security_review": "^3.0"
+        "drupal/security_review": "^3.0",
+        "drupal/site_audit": "^4.0@RC"
     }
 }

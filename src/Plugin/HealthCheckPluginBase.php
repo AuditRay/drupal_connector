@@ -26,21 +26,21 @@ abstract class HealthCheckPluginBase extends PluginBase implements HealthCheckIn
    * {@inheritdoc}
    */
   public function label() {
-    // Default implementation of setLabel().
+    // Default implementation of label().
   }
 
    /**
    * {@inheritdoc}
    */
   public function description() {
-    // Default implementation of setDescription().
+    // Default implementation of description().
   }
 
    /**
    * {@inheritdoc}
    */
   public function data() {
-    // Default implementation of setData().
+    // Default implementation of data().
   }
 
 }

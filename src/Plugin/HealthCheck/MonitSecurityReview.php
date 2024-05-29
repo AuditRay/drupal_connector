@@ -36,10 +36,7 @@ class MonitSecurityReview extends HealthCheckPluginBase {
     protected $securityReviewPluginManager;
 
     /**
-     * Constructs a SecurityReview object.
-     *
-     * @param \Drupal\security_review\SecurityReview $security_review_manager
-     *   The Security Review manager service.
+     * Constructs a MonitSecurityReview object.
      */
     public function __construct(array $configuration, $plugin_id, $plugin_definition) {
         $this->securityReview = \Drupal::service('security_review');
@@ -74,7 +71,6 @@ class MonitSecurityReview extends HealthCheckPluginBase {
      */
     public function data()
     {
-        $results = [];
         $checks = $this->securityReviewPluginManager->getChecks();
         $this->securityReview->runChecks($checks);
         $this->securityReview->setLastRun(time());
