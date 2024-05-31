@@ -85,6 +85,7 @@ class MonitSiteAudit extends HealthCheckPluginBase {
                 'description' => $checklist->getDescription(),
                 'status' => $checklist->getPercent(),
                 'statusDecription' => 'Success percentage of the checklist',
+                'time' => time(),
                 'details' => [],
             ];
             foreach ($checklist->getCheckObjects() as $check) {

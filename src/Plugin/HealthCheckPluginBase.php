@@ -41,6 +41,15 @@ abstract class HealthCheckPluginBase extends PluginBase implements HealthCheckIn
    */
   public function data() {
     // Default implementation of data().
+    return $data[$this->getPluginId()] = [
+              'id' => '',
+              'title' => '',
+              'description' => '',
+              'status' => '',
+              'statusDecription' => '',
+              'time' => '',
+              'details' => [],
+          ];
   }
 
 }
