@@ -133,21 +133,24 @@ class MonitSecurityReview extends HealthCheckPluginBase {
             foreach ($help_text['#paragraphs'] as $paragraph) {
                 $helpDetails[] = $paragraph->render();
             }
-            $payload[] = [
+            $data[$id] = [
                 'id' => $this->pluginId . '_' . $id,
                 'title' => $plugin->getTitle(),
-                'resultStatus' => $resultStatus,
-                'resultStatusMessage' => $resultMessage,
-                'helpText' => $helpDetails,
                 'description' => $plugin->getDescription(),
-                'namespace' => $plugin->getNamespace(),
-                'details' => $details,
-                'findings' => array_merge($lastResult['findings'], $lastResult['hushed']),
-                'time' => $this->securityReview->getLastRun(),
+                'status' => $resultStatus,
+                'statusDecription' => 'a string that indicates the success label',
+                'details' => [
+                    'resultStatusMessage' => $resultMessage,
+                    'helpText' => $helpDetails,
+                    'namespace' => $plugin->getNamespace(),
+                    'details' => $details,
+                    'findings' => array_merge($lastResult['findings'], $lastResult['hushed']),
+                    'time' => $this->securityReview->getLastRun(),
+                ],
             ];
         }
 
-        return $payload;
+        return $data;
     }
 
 }

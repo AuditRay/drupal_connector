@@ -3,6 +3,8 @@
 namespace Drupal\monit\Plugin\HealthCheck;
 
 use Drupal\monit\Plugin\HealthCheckPluginBase;
+use Drupal\site_audit\Renderer\Html;
+use Drupal\site_audit\Plugin\SiteAuditCheckBase;
 
 /**
  * @HealthCheck(
@@ -70,41 +72,66 @@ class MonitSiteAudit extends HealthCheckPluginBase {
      */
     public function data()
     {
-        $checklistsResult = [];
+        $$data = [];
         $options = ['skip' => 'none', 'format' => 'json', 'detail' => FALSE, 'bootstrap' => FALSE];
         $checklistDefinitions = $this->auditChecklistManager->getDefinitions();
         foreach ($checklistDefinitions as $id => $checklist) {
           $checklists[$id] = $this->auditChecklistManager->createInstance($checklist['id'], $options);
         }
         foreach ($checklists as $id => $checklist) {
-            $checklistsResult[$id] = [
+            $data[$id] = [
                 'id' => $this->pluginId . '_' . $id,
-                'percent' => $checklist->getPercent(),
                 'label' => $checklist->getLabel()->render(),
-                'checks' => [],
+                'description' => $checklist->getDescription(),
+                'status' => $checklist->getPercent(),
+                'statusDecription' => 'Success percentage of the checklist',
+                'details' => [],
             ];
             foreach ($checklist->getCheckObjects() as $check) {
-                // The results that we get from AuditChecks objects are not
+                // The details that we get from AuditChecks objects are not
                 // consistent, so we had to check for the type of the result.
-                $result = $check->getResult();
-                if (is_array($result) && isset($result['#theme'])) {
-                    $result = \Drupal::service('renderer')->render($result);
+                $details = $check->getResult();
+                if (is_array($details) && isset($details['#theme'])) {
+                    $details = \Drupal::service('renderer')->render($details);
                 }
-                elseif (!is_string($result)) {
-                    $result = $check->getResult()->render();
+                elseif (!is_string($details)) {
+                    $details = $check->getResult()->render();
                 }
-                $checklistsResult[$id]['checks'][$check->getId()] = [
+                $data[$id]['details'][$check->getId()] = [
                     'id' => $this->pluginId . '_' . $check->getId(),
                     'label' => $check->getLabel()->render(),
                     'description' => $check->getDescription()->render(),
-                    'result' => $result,
+                    'details' => $details,
                     'action' => $check->renderAction(),
-                    'score' => $check->getScore(),
+                    'status' => $this->getScoreLabel($check->getScore()),
                 ];
             }
         }
 
-        return $checklistsResult;
+        return $data;
+    }
+
+    /**
+     * Get the CSS class associated with a score.
+     *
+     * @return string
+     *   Name of the Twitter bootstrap class.
+     */
+    public function getScoreLabel($score = NULL) {
+        switch ($score) {
+        case SiteAuditCheckBase::AUDIT_CHECK_SCORE_PASS:
+            return 'success';
+
+        case SiteAuditCheckBase::AUDIT_CHECK_SCORE_WARN:
+            return 'warning';
+
+        case SiteAuditCheckBase::AUDIT_CHECK_SCORE_INFO:
+            return 'info';
+
+        default:
+            return 'danger';
+
+        }
     }
 
 }
