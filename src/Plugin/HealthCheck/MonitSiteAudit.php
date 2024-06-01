@@ -98,7 +98,7 @@ class MonitSiteAudit extends HealthCheckPluginBase {
                 elseif (!is_string($details)) {
                     $details = $check->getResult()->render();
                 }
-                $data[$id]['details'][$check->getId()] = [
+                $data[$id]['details'][] = [
                     'id' => $this->pluginId . '_' . $check->getId(),
                     'label' => $check->getLabel()->render(),
                     'description' => $check->getDescription()->render(),

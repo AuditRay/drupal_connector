@@ -141,11 +141,13 @@ class MonitSecurityReview extends HealthCheckPluginBase {
                 'statusDecription' => 'a string that indicates the success label',
                 'time' => $this->securityReview->getLastRun(),
                 'details' => [
-                    'resultStatusMessage' => $resultMessage,
-                    'helpText' => $helpDetails,
-                    'namespace' => $plugin->getNamespace(),
-                    'details' => $details,
-                    'findings' => array_merge($lastResult['findings'], $lastResult['hushed']),
+                    '0' => [
+                        'resultStatusMessage' => $resultMessage,
+                        'helpText' => $helpDetails,
+                        'namespace' => $plugin->getNamespace(),
+                        'details' => $details,
+                        'findings' => array_merge($lastResult['findings'], $lastResult['hushed']),
+                    ],
                 ],
             ];
         }
