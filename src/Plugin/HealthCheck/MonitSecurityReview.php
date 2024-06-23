@@ -75,12 +75,13 @@ class MonitSecurityReview extends HealthCheckPluginBase {
         $this->securityReview->runChecks($checks);
         $this->securityReview->setLastRun(time());
         $definitions = $this->securityReviewPluginManager->getDefinitions();
+        $data = [];
+        $helpDetails = [];
         foreach ($definitions as $id => $definition) {
             $plugin = $this->securityReviewPluginManager->createInstance($id);
             $lastResult = $plugin->lastResult();
             $result_number = $lastResult['result'];
             $details = [];
-            $helpDetails = [];
             $resultStatus = '';
             switch ($result_number) {
                 case CheckResult::SUCCESS:
@@ -101,7 +102,6 @@ class MonitSecurityReview extends HealthCheckPluginBase {
             }
             $resultMessage = $plugin->getStatusMessage($result_number);
             $resultDetails = $plugin->getDetails($lastResult['findings'], $lastResult['hushed']);
-
             foreach ($resultDetails as $resultDetail) {
                 foreach ($resultDetail['#paragraphs'] as $paragraph) {
                     if ($paragraph instanceof Link) {
@@ -133,22 +133,19 @@ class MonitSecurityReview extends HealthCheckPluginBase {
             foreach ($help_text['#paragraphs'] as $paragraph) {
                 $helpDetails[] = $paragraph->render();
             }
-            $data[$id] = [
+            $data[] = [
                 'id' => $this->pluginId . '_' . $id,
-                'title' => $plugin->getTitle(),
+                'label' => $plugin->getTitle(),
                 'description' => $plugin->getDescription(),
                 'status' => $resultStatus,
-                'statusDecription' => 'a string that indicates the success label',
-                'time' => $this->securityReview->getLastRun(),
-                'details' => [
-                    '0' => [
-                        'resultStatusMessage' => $resultMessage,
-                        'helpText' => $helpDetails,
-                        'namespace' => $plugin->getNamespace(),
-                        'details' => $details,
-                        'findings' => array_merge($lastResult['findings'], $lastResult['hushed']),
-                    ],
-                ],
+                'statusDescription' => 'a string that indicates the success label',
+                'namespace' => $plugin->getNamespace(),
+                'detailsTitle' => $resultMessage,
+                'detailsText' => $helpDetails,
+                'detailsFindings' => $details,
+                'detailsExtra' => [
+                  'findings' => array_merge($lastResult['findings'], $lastResult['hushed']),
+                ]
             ];
         }
 

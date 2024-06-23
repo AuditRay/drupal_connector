@@ -72,22 +72,14 @@ class MonitSiteAudit extends HealthCheckPluginBase {
      */
     public function data()
     {
-        $$data = [];
+        $data = [];
+        $checklists = [];
         $options = ['skip' => 'none', 'format' => 'json', 'detail' => FALSE, 'bootstrap' => FALSE];
         $checklistDefinitions = $this->auditChecklistManager->getDefinitions();
         foreach ($checklistDefinitions as $id => $checklist) {
           $checklists[$id] = $this->auditChecklistManager->createInstance($checklist['id'], $options);
         }
         foreach ($checklists as $id => $checklist) {
-            $data[$id] = [
-                'id' => $this->pluginId . '_' . $id,
-                'label' => $checklist->getLabel()->render(),
-                'description' => $checklist->getDescription(),
-                'status' => $checklist->getPercent(),
-                'statusDecription' => 'Success percentage of the checklist',
-                'time' => time(),
-                'details' => [],
-            ];
             foreach ($checklist->getCheckObjects() as $check) {
                 // The details that we get from AuditChecks objects are not
                 // consistent, so we had to check for the type of the result.
@@ -98,13 +90,32 @@ class MonitSiteAudit extends HealthCheckPluginBase {
                 elseif (!is_string($details)) {
                     $details = $check->getResult()->render();
                 }
-                $data[$id]['details'][] = [
-                    'id' => $this->pluginId . '_' . $check->getId(),
+                $finding = [
+                  [
+                    'type' => 'paragraph',
+                    'value' => $details,
+                  ]
+                ];
+
+                if($check->renderAction()){
+                  $finding[] = [
+                    'type' => 'paragraph',
+                    'value' => $check->renderAction(),
+                  ];
+                }
+                $data[] = [
+                    'id' => $this->pluginId . '_' . $id . '_' . $check->getId(),
                     'label' => $check->getLabel()->render(),
                     'description' => $check->getDescription()->render(),
-                    'details' => $details,
-                    'action' => $check->renderAction(),
                     'status' => $this->getScoreLabel($check->getScore()),
+                    'statusDescription' =>  'a string that indicates the success label',
+                    'namespace' => "Site Audit",
+                    'detailsTitle' => $check->getLabel()->render() . " - " . $check->getDescription()->render(),
+                    'detailsText' => [],
+                    'detailsFindings' => $finding,
+                    'detailsExtra' => [
+                      'action' => $check->renderAction(),
+                    ]
                 ];
             }
         }
