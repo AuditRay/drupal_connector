@@ -1,5 +1,5 @@
 {
-    "name": "monit",
+    "name": "monit/drupal-connector",
     "type": "drupal-module",
     "description": "Monit Integration",
     "keywords": [
