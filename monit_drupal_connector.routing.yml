@@ -9,7 +9,7 @@ monit_drupal_connector.monit_drupal_connector_config_form:
     _admin_route: TRUE
 
 monit_drupal_connector.health:
-  path: '/monit_drupal_connector/health'
+  path: '/monit/health'
   defaults:
     _title: "Subscribe device to topic"
     _controller: '\Drupal\monit_drupal_connector\Controller\HealthController::health'
