@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\monit\Plugin;
+namespace Drupal\monit_drupal_connector\Plugin;
 
 use Drupal\Component\Plugin\PluginBase;
 
@@ -11,7 +11,7 @@ abstract class HealthCheckPluginBase extends PluginBase implements HealthCheckIn
   public function __construct(array $configuration, $plugin_id, $plugin_definition) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
 
-    $config = \Drupal::config('monit.adminsettings');
+    $config = \Drupal::config('monit_drupal_connector.adminsettings');
     $this->token = $config->get('token');
   }
 

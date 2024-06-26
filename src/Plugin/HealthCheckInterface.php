@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\monit\Plugin;
+namespace Drupal\monit_drupal_connector\Plugin;
 
 use Drupal\Component\Plugin\PluginInspectionInterface;
 

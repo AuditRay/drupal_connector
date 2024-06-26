@@ -1,8 +1,8 @@
 <?php
 
-namespace Drupal\monit\Plugin\HealthCheck;
+namespace Drupal\monit_drupal_connector\Plugin\HealthCheck;
 
-use Drupal\monit\Plugin\HealthCheckPluginBase;
+use Drupal\monit_drupal_connector\Plugin\HealthCheckPluginBase;
 use Drupal\Core\Link;
 use Drupal\security_review\CheckResult;
 

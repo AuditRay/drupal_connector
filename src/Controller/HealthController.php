@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\monit\Controller;
+namespace Drupal\monit_drupal_connector\Controller;
 
 use Drupal\Core\Access\AccessResult;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -46,7 +46,7 @@ class HealthController
    *   The access result.
    */
   public function access(Request $request = NULL) {
-    $config = \Drupal::config('monit.adminsettings');
+    $config = \Drupal::config('monit_drupal_connector.adminsettings');
     $accessToken = $request ? $request->request->get('token') : $_REQUEST['token'];
     $token = $config->get('token');
     return AccessResult::allowedIf($accessToken === $token);

@@ -8,4 +8,4 @@ dependencies:
   - drupal:security_review
   - drupal:site_audit
 
-configure: monit.monit_config_form
+configure: monit_drupal_connector.monit_config_form

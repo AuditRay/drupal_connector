@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains monit.module.
+ * Contains monit_drupal_connector.module.
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
@@ -10,7 +10,7 @@ use Drupal\Core\Routing\RouteMatchInterface;
 /**
  * Implements hook_help().s
  */
-function monit_help($route_name, RouteMatchInterface $route_match) {
+function monit_drupal_connector_help($route_name, RouteMatchInterface $route_match) {
   switch ($route_name) {
     // Main module help for the monit module.
     case 'help.page.monit':
@@ -29,18 +29,18 @@ function monit_help($route_name, RouteMatchInterface $route_match) {
  *
  * @return array $updateData
  */
-function monit_get_available_updates() {
+function monit_drupal_connector_get_available_updates() {
   // Send modules updates data
   \Drupal::moduleHandler()->loadInclude('update', 'compare.inc');
   $updates = update_get_available(TRUE);
   $projects = update_calculate_project_data($updates);
 
   $updateData = [];
-  $updateData["framework_info"] = get_update_object("drupal", $projects, $updates);
+  $updateData["framework_info"] = monit_drupal_connector_get_update_object("drupal", $projects, $updates);
   $updateData["website_components"] = [];
   unset($projects["drupal"]);
   foreach ($projects as $key => $value) {
-    $componentUpdateData = get_update_object($key, $projects, $updates);
+    $componentUpdateData = monit_drupal_connector_get_update_object($key, $projects, $updates);
     $updateData["website_components"][] = $componentUpdateData;
   }
 
@@ -56,7 +56,7 @@ function monit_get_available_updates() {
  * @param array $updates
  * @return array $updateData
  */
-function get_update_object($project_name, $projects, $updates) {
+function monit_drupal_connector_get_update_object($project_name, $projects, $updates) {
   if(!$projects[$project_name]) return false;
   $updateTypes = [
     "1" => "NOT_SECURE",

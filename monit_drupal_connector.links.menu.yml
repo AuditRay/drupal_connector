@@ -1,0 +1,6 @@
+monit_drupal_connector.monit_drupal_connector_config_form:
+  title: 'Monit Integration configuration'
+  route_name: monit_drupal_connector.monit_drupal_connector_config_form
+  description: 'Monit configurations'
+  parent: system.admin_config_system
+  weight: 99

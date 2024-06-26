@@ -1,14 +1,14 @@
 {
-    "name": "monit/drupal-connector",
+    "name": "drupal/monit_drupal_connector",
     "type": "drupal-module",
     "description": "Monit Integration",
     "keywords": [
     ],
-    "homepage": "https://www.drupal.org/project/monit",
+    "homepage": "https://www.drupal.org/project/monit_drupal_connector",
     "minimum-stability": "dev",
     "support": {
-        "issues": "https://www.drupal.org/project/issues/monit",
-        "source": "http://cgit.drupalcode.org/monit"
+        "issues": "https://www.drupal.org/project/issues/monit_drupal_connector",
+        "source": "http://cgit.drupalcode.org/monit_drupal_connector"
     },
     "require": {
         "drupal/security_review": "^1.0",

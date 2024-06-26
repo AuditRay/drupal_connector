@@ -1,0 +1,19 @@
+monit_drupal_connector.monit_drupal_connector_config_form:
+  path: '/admin/config/system/monit_drupal_connector_config'
+  defaults:
+    _form: '\Drupal\monit_drupal_connector\Form\MonitConfigForm'
+    _title: 'Monit Integration Configuration'
+  requirements:
+    _permission: 'access monit configurations'
+  options:
+    _admin_route: TRUE
+
+monit_drupal_connector.health:
+  path: '/monit/health'
+  defaults:
+    _title: "Subscribe device to topic"
+    _controller: '\Drupal\monit_drupal_connector\Controller\HealthController::health'
+  requirements:
+    _custom_access: '\Drupal\monit_drupal_connector\Controller\HealthController::access'
+  options:
+    _format: 'json'
