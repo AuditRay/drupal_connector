@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\monit\Annotation;
+namespace Drupal\monit_drupal_connector\Annotation;
 
 use Drupal\Component\Annotation\Plugin;
 

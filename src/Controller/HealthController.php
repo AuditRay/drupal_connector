@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\monit\Controller;
+namespace Drupal\monit_drupal_connector\Controller;
 
 use Drupal\Core\Access\AccessResult;
 use Symfony\Component\HttpFoundation\JsonResponse;

@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Contains Drupal\monit\Form\MonitConfigForm.
+ * Contains Drupal\monit_drupal_connector\Form\MonitConfigForm.
  */
 
-namespace Drupal\monit\Form;
+namespace Drupal\monit_drupal_connector\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
