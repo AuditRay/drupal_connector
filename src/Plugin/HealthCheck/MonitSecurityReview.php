@@ -2,6 +2,7 @@
 
 namespace Drupal\monit_drupal_connector\Plugin\HealthCheck;
 
+use Drupal\Core\State\StateInterface;
 use Drupal\monit_drupal_connector\Plugin\HealthCheckPluginBase;
 use Drupal\Core\Link;
 use Drupal\security_review\CheckResult;
@@ -29,6 +30,13 @@ class MonitSecurityReview extends HealthCheckPluginBase {
     protected $securityReview;
 
     /**
+     * The state storage.
+     *
+     * @var \Drupal\Core\State\StateInterface
+     */
+    protected StateInterface $state;
+
+    /**
      * The Security Review manager service.
      *
      * @var \Drupal\security_review\SecurityReviewManager
@@ -40,6 +48,7 @@ class MonitSecurityReview extends HealthCheckPluginBase {
      */
     public function __construct(array $configuration, $plugin_id, $plugin_definition) {
         $this->securityReview = \Drupal::service('security_review');
+        $this->state = \Drupal::service('state');
         $this->securityReviewPluginManager = \Drupal::service('plugin.manager.security_review.security_check');
         $this->pluginId = $plugin_id;
     }
@@ -71,6 +80,16 @@ class MonitSecurityReview extends HealthCheckPluginBase {
      */
     public function data()
     {
+
+        //BUG FIX FOR EMPTY DATA
+        // Determine web server's uid and groups.
+        $uid = posix_getuid();
+        $groups = posix_getgroups();
+
+        // Store the data in the State system.
+        $this->state->set('security_review.server.uid', $uid ?: -1);
+        $this->state->set('security_review.server.groups', $groups ?: []);
+
         $checks = $this->securityReviewPluginManager->getChecks();
         $this->securityReview->runChecks($checks);
         $this->securityReview->setLastRun(time());
