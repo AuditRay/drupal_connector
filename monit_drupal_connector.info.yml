@@ -1,4 +1,4 @@
-name: 'Monit'
+name: 'Monit Drupal Connector'
 type: module
 description: 'Monit Integration'
 core_version_requirement: ^10

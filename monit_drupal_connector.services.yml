@@ -1,4 +1,4 @@
 services:
   plugin.manager.health_check:
-    class: Drupal\monit\Plugin\Type\HealthCheckPluginManager
+    class: Drupal\monit_drupal_connector\Plugin\Type\HealthCheckPluginManager
     parent: default_plugin_manager

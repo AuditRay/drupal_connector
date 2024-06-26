@@ -1,4 +1,4 @@
-monit.monit_config_form:
+monit_drupal_connector.monit_drupal_connector_config_form:
   title: 'Monit Integration configuration'
   route_name: monit.monit_config_form
   description: 'Monit configurations'
