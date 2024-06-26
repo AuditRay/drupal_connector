@@ -45,9 +45,9 @@ class HealthController
    * @return \Drupal\Core\Access\AccessResultInterface
    *   The access result.
    */
-  public function access(Request $request) {
+  public function access(Request $request = NULL) {
     $config = \Drupal::config('monit.adminsettings');
-    $accessToken = $request->request->get('token');
+    $accessToken = $request ? $request->request->get('token') : $_REQUEST['token'];
     $token = $config->get('token');
     return AccessResult::allowedIf($accessToken === $token);
   }

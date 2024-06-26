@@ -11,7 +11,7 @@
         "source": "http://cgit.drupalcode.org/monit"
     },
     "require": {
-        "drupal/security_review": "^3.0",
+        "drupal/security_review": "^1.0",
         "drupal/site_audit": "^4.0@RC"
     }
 }

@@ -20,27 +20,13 @@ class MonitPhpInfo extends HealthCheckPluginBase
    * @var string $pluginId
    */
   protected $pluginId;
-  /**
-   * The Security Review manager service.
-   *
-   * @var \Drupal\security_review\SecurityReview
-   */
-  protected $securityReview;
 
-  /**
-   * The Security Review manager service.
-   *
-   * @var \Drupal\security_review\SecurityReviewManager
-   */
-  protected $securityReviewPluginManager;
 
   /**
    * Constructs a MonitSecurityReview object.
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition)
   {
-    $this->securityReview = \Drupal::service('security_review');
-    $this->securityReviewPluginManager = \Drupal::service('plugin.manager.security_review.security_check');
     $this->pluginId = $plugin_id;
   }
 
@@ -141,4 +127,3 @@ class MonitPhpInfo extends HealthCheckPluginBase
   }
 
 }
-

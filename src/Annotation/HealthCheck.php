@@ -16,20 +16,20 @@ final class HealthCheck extends Plugin {
   /**
    * The plugin ID.
    */
-  public readonly string $id;
+  public $id;
 
   /**
    * The human-readable name of the plugin.
    *
    * @ingroup plugin_translatable
    */
-  public readonly string $label;
+  public $label;
 
   /**
    * The description of the plugin.
    *
    * @ingroup plugin_translatable
    */
-  public readonly string $description;
+  public $description;
 
 }
