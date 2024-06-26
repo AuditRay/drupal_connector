@@ -20,7 +20,7 @@ class MonitConfigForm extends FormBase {
    */
   protected function getEditableConfigNames() {
     return [
-      'monit.adminsettings',
+      'monit_drupal_connector.adminsettings',
     ];
   }
 
@@ -28,14 +28,14 @@ class MonitConfigForm extends FormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'monit_config_form';
+    return 'monit_drupal_connector_config_form';
   }
 
   /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $config = $this->config('monit.adminsettings');
+    $config = $this->config('monit_drupal_connector.adminsettings');
 
     $form['token'] = [
       '#type' => 'textarea',
@@ -68,7 +68,7 @@ class MonitConfigForm extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
 
-    $config = $this->configFactory()->getEditable('monit.adminsettings');
+    $config = $this->configFactory()->getEditable('monit_drupal_connector.adminsettings');
     $config->set('token', $form_state->getValue('token'))->save();
 
     \Drupal::messenger()->addMessage('Monit configurations saved.');

@@ -20,7 +20,7 @@ class HealthController
     $payload['available_updates'] = [
       'label' => "Available updates",
       'description' => "Drupal's core and installed contributed modules available updates.",
-      'data' => monit_get_available_updates(),
+      'data' => monit_drupal_connector_get_available_updates(),
     ];
 
     // Get other defined health checks plugins.
@@ -46,7 +46,7 @@ class HealthController
    *   The access result.
    */
   public function access(Request $request) {
-    $config = \Drupal::config('monit.adminsettings');
+    $config = \Drupal::config('monit_drupal_connector.adminsettings');
     $accessToken = $request->request->get('token');
     $token = $config->get('token');
     return AccessResult::allowedIf($accessToken === $token);
