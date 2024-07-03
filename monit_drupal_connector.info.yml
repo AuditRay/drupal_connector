@@ -1,7 +1,7 @@
 name: 'Monit'
 type: module
 description: 'Monit Integration'
-core_version_requirement: ^8.8 || ^9.4
+core_version_requirement: ^8.8 || ^9.4 || ^10
 package: 'Monit'
 dependencies:
   - drupal:update

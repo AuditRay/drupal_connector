@@ -111,7 +111,7 @@ class MonitSecurityReview extends HealthCheckPluginBase {
                       $helpDetails[] = $paragraph->toString();
                   }
                   else {
-                      $helpDetails[]= $paragraph->render();
+                    $helpDetails[]= $paragraph;
                   }
               }
               $payload[] = [
