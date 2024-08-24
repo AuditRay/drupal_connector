@@ -31,9 +31,9 @@ function monit_drupal_connector_help($route_name, RouteMatchInterface $route_mat
  */
 function monit_drupal_connector_get_available_updates() {
   // Send modules updates data
-  \Drupal::moduleHandler()->loadInclude('update', 'compare.inc');
+    \Drupal::moduleHandler()->loadInclude('monit_drupal_connector', 'compare.inc');
   $updates = update_get_available(TRUE);
-  $projects = update_calculate_project_data($updates);
+  $projects = monit_drupal_connector_calculate_project_data($updates);
 
   $updateData = [];
   $updateData["framework_info"] = monit_drupal_connector_get_update_object("drupal", $projects, $updates);
@@ -75,7 +75,7 @@ function monit_drupal_connector_get_update_object($project_name, $projects, $upd
     "type" => $updateType,
     "current_version" => $projects[$project_name]["existing_version"],
     "latest_version" => $projects[$project_name]["latest_version"],
-    "recommended_version" => $projects[$project_name]["latest_version"],
+    "recommended_version" => $projects[$project_name]["recommended"],
     "available_releases" => [],
     "security_updates" => [],
   ];
