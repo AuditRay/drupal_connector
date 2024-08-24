@@ -89,7 +89,13 @@ class MonitSecurityReview extends HealthCheckPluginBase {
         // Store the data in the State system.
         $this->state->set('security_review.server.uid', $uid ?: -1);
         $this->state->set('security_review.server.groups', $groups ?: []);
-
+        //BUG FIX FOR EMPTY SKIPPED
+        $config = \Drupal::configFactory()->getEditable('security_review.settings');
+        $skipped = $config->get('skipped');
+        if($skipped == null) {
+            // Set the default value.
+            $config->set('skipped', []);
+        }
         $checks = $this->securityReviewPluginManager->getChecks();
         $this->securityReview->runChecks($checks);
         $this->securityReview->setLastRun(time());
@@ -163,7 +169,7 @@ class MonitSecurityReview extends HealthCheckPluginBase {
                 'detailsText' => $helpDetails,
                 'detailsFindings' => $details,
                 'detailsExtra' => [
-                  'findings' => array_merge($lastResult['findings'], $lastResult['hushed']),
+                    'findings' => array_merge($lastResult['findings'], $lastResult['hushed']),
                 ]
             ];
         }
