@@ -114,8 +114,12 @@ class MonitSecurityReview extends HealthCheckPluginBase {
                       $helpDetails[]= $paragraph->render();
                   }
               }
+              $id = str_replace('security_review-', '', $result->check()->id());
+              if ($id === "file_perms") {
+                  $id = "file_permissions";
+              }
               $payload[] = [
-                  'id' => $this->pluginId . '_' . $result->check()->id(),
+                  'id' => $this->pluginId . '_' . $id,
                   'label' => $result->check()->getTitle(),
                   'description' => $result->resultMessage()->render(),
                   'status' => $resultStatus,
