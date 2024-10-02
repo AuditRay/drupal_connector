@@ -101,8 +101,8 @@ class MonitSecurityReview extends HealthCheckPluginBase {
         $this->securityReview->setLastRun(time());
         $definitions = $this->securityReviewPluginManager->getDefinitions();
         $data = [];
-        $helpDetails = [];
         foreach ($definitions as $id => $definition) {
+            $helpDetails = [];
             $plugin = $this->securityReviewPluginManager->createInstance($id);
             $lastResult = $plugin->lastResult();
             $result_number = $lastResult['result'];
