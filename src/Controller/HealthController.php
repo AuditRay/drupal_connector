@@ -46,10 +46,13 @@ class HealthController
    *   The access result.
    */
   public function access(Request $request) {
-    $config = \Drupal::config('monit_drupal_connector.adminsettings');
-    $accessToken = $request->request->get('token');
-    $token = $config->get('token');
-    return AccessResult::allowedIf($accessToken === $token);
+      $config = \Drupal::config('monit_drupal_connector.adminsettings');
+      $accessToken = $request ? $request->headers->get('Authorization') : $_SERVER['HTTP_AUTHORIZATION'];
+      $token = $config->get('token');
+      if(!$token || !$accessToken) {
+          return AccessResult::forbidden();
+      }
+      return AccessResult::allowedIf($accessToken === $token);
   }
 
 }
