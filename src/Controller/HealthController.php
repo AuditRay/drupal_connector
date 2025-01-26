@@ -47,8 +47,11 @@ class HealthController
    */
   public function access(Request $request = NULL) {
     $config = \Drupal::config('monit_drupal_connector.adminsettings');
-    $accessToken = $request ? $request->request->get('token') : $_REQUEST['token'];
+    $accessToken = $request ? $request->headers->get('Authorization') : $_SERVER['HTTP_AUTHORIZATION'];
     $token = $config->get('token');
+    if(!$token || !$accessToken) {
+       return AccessResult::forbidden();
+    }
     return AccessResult::allowedIf($accessToken === $token);
   }
 
