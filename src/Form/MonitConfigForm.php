@@ -38,7 +38,7 @@ class MonitConfigForm extends FormBase {
     $config = $this->config('monit_drupal_connector.adminsettings');
 
     $form['token'] = [
-      '#type' => 'textarea',
+      '#type' => 'key_select',
       '#title' => $this->t('Token'),
       '#description' => $this->t('Your Monit account token.'),
       '#default_value' => $config->get('token'),

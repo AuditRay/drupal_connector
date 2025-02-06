@@ -11,6 +11,7 @@
         "source": "http://cgit.drupalcode.org/monit_drupal_connector"
     },
     "require": {
+        "drupal/key": "^1.19",
         "drupal/security_review": "^1.0",
         "drupal/site_audit": "^4.0@RC"
     }
