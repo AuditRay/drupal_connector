@@ -7,5 +7,6 @@ dependencies:
   - drupal:update
   - drupal:security_review
   - drupal:site_audit
+  - drupal:key
 
 configure: monit.monit_config_form
