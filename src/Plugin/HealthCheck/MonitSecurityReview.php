@@ -5,6 +5,7 @@ namespace Drupal\monit_drupal_connector\Plugin\HealthCheck;
 use Drupal\Core\State\StateInterface;
 use Drupal\monit_drupal_connector\Plugin\HealthCheckPluginBase;
 use Drupal\Core\Link;
+use Drupal\Core\GeneratedLink;
 use Drupal\security_review\CheckResult;
 
 /**
@@ -129,17 +130,18 @@ class MonitSecurityReview extends HealthCheckPluginBase {
             $resultDetails = $plugin->getDetails($lastResult['findings'], $lastResult['hushed']);
             foreach ($resultDetails as $resultDetail) {
                 foreach ($resultDetail['#paragraphs'] as $paragraph) {
-                    if ($paragraph instanceof Link) {
+                    if ($paragraph instanceof Link || $paragraph instanceof GeneratedLink) {
                         $details[] = [
                             "type" => "link",
                             "value" => $paragraph->toString()
                         ];
-                    }
-                    else {
-                        $details[] = [
-                            "type" => "paragraph",
-                            "value" => $paragraph->render()
-                        ];
+                    } else {
+                        try {
+                            $details[] = [
+                                "type" => "paragraph",
+                                "value" => $paragraph->render()
+                            ];
+                        } catch (\Exception $e) {}
                     }
                 }
                 if (isset($resultDetail['#items'])) {
@@ -156,7 +158,9 @@ class MonitSecurityReview extends HealthCheckPluginBase {
 
             $help_text = $plugin->getHelp();
             foreach ($help_text['#paragraphs'] as $paragraph) {
-                $helpDetails[] = $paragraph->render();
+                try {
+                    $helpDetails[] = $paragraph->render();
+                } catch (\Exception $e) {}
             }
             $data[] = [
                 'id' => $this->pluginId . '_' . $id,
