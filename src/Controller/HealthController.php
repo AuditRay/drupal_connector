@@ -42,7 +42,7 @@ class HealthController
             $error = "";
             try {
                 $data = $plugin->data();
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 $error = $e->getMessage();
             }
             $payload[$id] = [
